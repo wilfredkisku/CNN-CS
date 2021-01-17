@@ -1,0 +1,21 @@
+import os
+import cv2
+import numpy as np
+from os import listdir
+from pathlib import Path
+from random import randint, sample
+from os.path import isfile, join
+
+data        = Path('../../../../../Datasets/BSR_bsds500/BSR/BSDS500/data/images')
+lst         = [x for x in data.iterdir() if data.is_dir()]
+onlyfiles   = [f for f in listdir(lst[0]) if isfile(join(lst[0], f))]
+
+for _, i in enumerate(lst):
+    print(str(i))
+
+for _, i in enumerate(onlyfiles):
+    print(i)
+
+
+x = np.random.randint(0,1023,(1023,1023))
+print(min(x))
