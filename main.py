@@ -1,20 +1,19 @@
-import numpy as np
-import os
-import cv2
-from os import listdir
-from pathlib import Path
-from random import randint, sample
-from os.path import isfile, join
+import tensorflow as tf
 
-data = Path("../../../../Datasets/BSR_bsds500/BSR/BSDS500/data/images")
-lst = [x for x in data.iterdir() if data.is_dir()]
-print(len(lst))
-onlyfiles = [f for f in listdir(lst[0]) if isfile(join(lst[0], f))]
+input_img = tf.keras.Input(shape=(48, 48, 1))
+x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+x = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(x)
+x = tf.keras.layers.Dropout(0.2)(x)
+x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+encoded = MaxPooling2D((2, 2), padding='same')(x)
 
-#height = sample(range(0,1024), 512)
-#width = sample(range(0,1024), 512)
-print(lst[0])
-print(len(onlyfiles))
-print(sorted(onlyfiles))
-#print(sorted(height))
-#print(sorted(width))
+x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
+x = tf.keras.layers.UpSampling2D((2, 2))(x)
+x = tf.keras.layers.Dropout(0.2)(x)
+x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+x = tf.keras.layers.UpSampling2D((2, 2))(x)
+
+decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+
+ae = Model(input_img, decoded)
+ae.compile(optimizer='adam', loss='MSE')
