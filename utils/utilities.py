@@ -10,6 +10,10 @@ from sklearn.feature_extraction import image
 
 import matplotlib.pyplot as plt
 
+count_n = 500
+IMG_WIDTH = 128
+IMG_HEIGHT = 128
+
 #recreate an image with pixels removed
 def create(width, height, pp, img):
     
@@ -65,8 +69,11 @@ def printResult():
     return None 
 
 if __name__ == "__main__":
-    #img = np.random.randint(1, 2, (20,20))
-    #print(img)
-    #print(create(20, 20, 0.5, img))
 
+    ########################## CREATE DATASET ###########################
+    X_train = np.zeros((count_n, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
+    Y_train = np.zeros((count_n, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
+    
+    #####################################################################
     curate()
+
