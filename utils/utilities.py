@@ -36,6 +36,34 @@ def curate():
             imgplot = plt.imshow(img, cmap='gray', vmin = 0, vmax = 255)
             plt.show()
 
+#changes need to be made
+def printResult():
+    y_vari = np.argmax(y_var, axis=3)
+    y_pred = model.predict(X_var)
+    y_predi = np.argmax(y_pred, axis=3)
+    print(y_vari.shape,y_predi.shape)
+
+    for i in range(10,20):
+    img = X_var[i]
+    segpred = y_predi[i]
+    seg = y_vari[i]
+
+    fig = plt.figure(figsize=(15,5))
+    ax = fig.add_subplot(1,3,1)
+    ax.imshow(img)
+    ax.set_title("original")
+
+    ax = fig.add_subplot(1,3,2)
+    ax.imshow(design_colormap(segpred,n_classes))
+    ax.set_title("FCN")
+
+    ax = fig.add_subplot(1,3,3)
+    ax.imshow(design_colormap(seg,n_classes))
+    ax.set_title("Ground True")
+    plt.show()
+
+    return None 
+
 if __name__ == "__main__":
     #img = np.random.randint(1, 2, (20,20))
     #print(img)
