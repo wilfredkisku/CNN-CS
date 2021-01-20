@@ -14,16 +14,16 @@ import matplotlib.pyplot as plt
 #recreate an image with pixels removed
 def create(pp, img):
     
-    img_ = np.zeros((4, 128, 128, 1), dtype=np.float32)
+    img_ = np.zeros((4, IMG_WIDTH, IMG_HEIGHT, 1), dtype=np.float32)
 
     for i in range(len(img)):
-        mask = np.random.choice([0, 1], size=(128, 128), p=[1-pp, pp])
+        mask = np.random.choice([0, 1], size=(IMG_WIDTH, IMG_HEIGHT), p=[1-pp, pp])
         idx_w, idx_h = np.where(mask ==  1)
     
         for j in range(len(idx_w)):
-            img[i, idx_w[j],idx_h[j],0] = 0
+            img[i, idx_w[j],idx_h[j]] = 0
         
-        img_[i,:,:,0] = img[i,:,:,0]
+        img_[i,:,:] = img[i,:,:]
     return img_
 
 #extract the images from the dataset
@@ -39,21 +39,19 @@ def curate(X_train, Y_train):
             p = join(str(lst[idx]),i)
             img = cv2.imread(p, 0)
             y_patches = image.extract_patches_2d(img, (128,128), max_patches = 4)
-            
-            y_patches = np.reshape(y_patches,(4, 128,128,-1))
-
-            
             y_patch = copy.deepcopy(y_patches)
             x_patches = create(0.1, y_patch)
-            
+            #imgplot = plt.imshow(img, cmap='gray', vmin = 0, vmax = 255)
+            #plt.show()
             for k in range(len(x_patches)):
-                X_train[cnt] = x_patches[k]
-                Y_train[cnt] = y_patches[k]
+                x = x_patches[k].reshape(128,128,-1)
+                X_train[cnt] = x
+                y = y_patches[k].reshape(128,128,-1)
+                Y_train[cnt] = y
                 cnt += 1
-            
     return X_train, Y_train
 
-
+#changes need to be made
 def printResult():
     y_vari = np.argmax(y_var, axis=3)
     y_pred = model.predict(X_var)
@@ -94,8 +92,8 @@ if __name__ == "__main__":
     #######################################################################
     X, Y = curate(X_train, Y_train)
 
-    print(Y[0].shape)
-    print(X[0].shape)
+    print(X.shape)
+    print(Y.shape)
 
     plt.imshow(Y[0], cmap='gray')
     plt.show()
