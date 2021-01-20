@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 #recreate an image with pixels removed
 def create(pp, img):
     
-    img_ = np.zeros((4, 128, 128, 1), dtype=np.float32)
+    img_ = np.zeros((8, 128, 128, 1), dtype=np.float32)
 
     for i in range(len(img)):
         mask = np.random.choice([0, 1], size=(128, 128), p=[1-pp, pp])
@@ -38,9 +38,9 @@ def curate(X_train, Y_train):
         for _, i in enumerate(onlyfiles):
             p = join(str(lst[idx]),i)
             img = cv2.imread(p, 0)
-            y_patches = image.extract_patches_2d(img, (128,128), max_patches = 4)
+            y_patches = image.extract_patches_2d(img, (128,128), max_patches = 8)
             
-            y_patches = np.reshape(y_patches,(4, 128,128,-1))
+            y_patches = np.reshape(y_patches,(8, 128,128,-1))
 
             
             y_patch = copy.deepcopy(y_patches)
@@ -54,36 +54,24 @@ def curate(X_train, Y_train):
     return X_train, Y_train
 
 
-def printResult():
-    y_vari = np.argmax(y_var, axis=3)
-    y_pred = model.predict(X_var)
-    y_predi = np.argmax(y_pred, axis=3)
-    print(y_vari.shape,y_predi.shape)
+def printResult(X, Y):
 
-    for i in range(10,20):
-        img = X_var[i]
-        segpred = y_predi[i]
-        seg = y_vari[i]
 
-        fig = plt.figure(figsize=(15,5))
-        ax = fig.add_subplot(1,3,1)
-        ax.imshow(img)
-        ax.set_title("original")
-
-        ax = fig.add_subplot(1,3,2)
-        ax.imshow(design_colormap(segpred,n_classes))
-        ax.set_title("FCN")
-
-        ax = fig.add_subplot(1,3,3)
-        ax.imshow(design_colormap(seg,n_classes))
-        ax.set_title("Ground True")
-        plt.show()
-
+    fig = plt.figure(figsize=(9, 4))
+    columns = 10
+    rows = 1
+    for i in range(1, columns*rows + 1):
+        img_x = X[i-1]
+        ax = fig.add_subplot(rows, columns, i)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        plt.imshow(img_x, cmap = 'gray')
+    plt.show()
     return None 
 
 if __name__ == "__main__":
 
-    count_n = 500 * 4
+    count_n = 500 * 8
     IMG_WIDTH = 128
     IMG_HEIGHT = 128
 
@@ -94,12 +82,28 @@ if __name__ == "__main__":
     #######################################################################
     X, Y = curate(X_train, Y_train)
 
-    print(Y[0].shape)
-    print(X[0].shape)
+    #######################################################################
+    number_of_rows = X.shape[0]
+    random_indices = np.random.choice(number_of_rows, size=10, replace=False)
+    X_random_rows = X[random_indices, :, :, :]
+    Y_random_rows = Y[random_indices, :, :, :]
+    #######################################################################
 
+    print(X_random_rows.shape)
+    print(Y_random_rows.shape)
+
+    printResult(X_random_rows,Y_random_rows)
+
+    plt.imshow(X_random_rows[0], cmap='gray')
+    plt.show()
+
+    plt.imshow(Y_random_rows[0], cmap='gray')
+    plt.show()
+
+    '''
     plt.imshow(Y[0], cmap='gray')
     plt.show()
 
     plt.imshow(X[0], cmap='gray')
     plt.show()
-
+    '''
