@@ -64,6 +64,7 @@ def networkNew(x_train, y_train, x_val, y_val):
     ae.summary()
 
     history = ae.fit(x_train, y_train, epochs=35, batch_size=64, shuffle=True, validation_data=(x_val, y_val), verbose = 1)
+    return ae
 
 def network(x_train, y_train, x_val, y_val):
 
@@ -96,7 +97,7 @@ def network(x_train, y_train, x_val, y_val):
     ae.summary()
 
     history = ae.fit(x_train, y_train, epochs=35, batch_size=64, shuffle=True, validation_data=(x_val, y_val), verbose = 1)
-
+    return ae
 
 if __name__ == "__main__":
     #create dataset for images
@@ -139,5 +140,19 @@ if __name__ == "__main__":
     plt.imshow(Y_VAL[0])
     plt.show()
     '''
-    #network(X_TRAIN, Y_TRAIN, X_VAL, Y_VAL)
-    networkNew(X_TRAIN, Y_TRAIN, X_VAL, Y_VAL)
+    #model_cnn = network(X_TRAIN, Y_TRAIN, X_VAL, Y_VAL)
+    print(X_VAL[:10,:,:,:].shape)
+    
+    model_cnn = networkNew(X_TRAIN, Y_TRAIN, X_VAL, Y_VAL)
+    predict = model_cnn.predict(X_VAL[:10,:,:,:])
+
+    fig = plt.figure(figsize=(9, 4))
+    columns = 10
+    rows = 1
+    for i in range(1, columns*rows + 1):
+        img_x = predict[i-1]
+        ax = fig.add_subplot(rows, columns, i)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        plt.imshow(img_x, cmap = 'gray')
+    plt.show()
