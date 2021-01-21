@@ -49,9 +49,16 @@ def networkCSNet(x_train, y_train, x_val, y_val):
     ae.compile(optimizer='adam', loss=ssim_loss)
 
     ae.summary()
+    checkpointer = ModelCheckpoint('models/cs-unet-500.h5', verbose=1, save_best_only=True)
+    history = ae.fit(x_train, y_train, epochs=500, batch_size=64, shuffle=True, validation_data=(x_val, y_val), verbose = 1,  callbacks=[checkpointer])
 
-    history = ae.fit(x_train, y_train, epochs=35, batch_size=64, shuffle=True, validation_data=(x_val, y_val), verbose = 1)
+    hist_df = pd.DataFrame(history.history)
+    hist_csv_file = 'models/cs-unet-history-500.csv'
 
+    with open(hist_csv_file, mode = 'w') as f:
+        hist_df.to_csv(f)
+
+    print('End of training ...')
     return ae
 
 def networkNew(x_train, y_train, x_val, y_val):
