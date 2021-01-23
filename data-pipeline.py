@@ -15,10 +15,24 @@ def convert(np_array):
   return tf_tensor
 
 tf_value = convert(np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32))
-
-print(tf_value)
-
-dataset = tf.data.Dataset.from_tensor_slices(np.random.randint(0,2,(10,100,100,1)))
-
+dataset = tf.data.Dataset.from_tensor_slices(tf_value)
+print(dataset)
+'''
+print(dataset)
+############## ITER 1 ###############
 for elem in dataset:
+    print(elem.numpy())
+
+############## ITER 2 ###############
+it = iter(dataset)
+
+print(next(it).numpy().shape)
+print(next(it).numpy().shape)
+'''
+############## DATASET STRUCTURE ###############
+
+dataset1 = tf.data.Dataset.from_tensor_slices(tf.random.uniform([4, 10, 10, 1]))
+
+print(dataset1.element_spec)
+for elem in dataset1:
     print(elem.numpy().shape)
