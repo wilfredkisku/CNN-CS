@@ -9,7 +9,9 @@ import numpy as np
 np.set_printoptions(precision = 4)
 
 ##1. Start with a data source (Construct a Dataset from the data in the memory)
-##2. u
+##2. Create the Dataset
+##3. Set batch processing and shuffle
+##4. Preprocessing of the dataset elements
 
 def convert(np_array):
   tf_tensor = tf.convert_to_tensor(np_array, dtype=tf.float32)
@@ -29,7 +31,7 @@ it = iter(dataset)
 
 print(next(it).numpy().shape)
 print(next(it).numpy().shape)
-'''
+
 
 ############## DATASET STRUCTURE ###############
 
@@ -70,3 +72,22 @@ model = tf.keras.Sequential([
 model.compile(optimizer=tf.keras.optimizers.RMSprop(), loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['sparse_categorical_accuracy'])
 
 results = model.fit(train_dataset, epochs=10)
+'''
+
+train, test = tf.keras.datasets.fashion_mnist.load_data()
+
+images, labels = train
+images = images / 255.
+dataset = tf.data.Dataset.from_tensor_slices((images, labels))
+print(dataset)
+
+def count(stop):
+    i = 0
+    while i <  stop:
+        yield i
+        i += 1
+
+for n in count(5):
+    print(n)
+
+ds_counter = tf.data.Dataset.from_generator(count, args=[25], output_types=tf.int32, output_shapes = (), )
