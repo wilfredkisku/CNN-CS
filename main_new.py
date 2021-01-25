@@ -8,10 +8,6 @@ import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from utils.utilities import curate
 
-count_n = 500 * 8
-IMG_WIDTH = 128
-IMG_HEIGHT = 128
-
 def ssim_loss(true, pred):
   return 1 - tf.reduce_mean(tf.image.ssim(true, pred, 1.0))
 
@@ -58,14 +54,19 @@ def network(x_train, y_train, x_val, y_val):
     
     x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(input_img)
     x = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(x)
+    
     x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
     x = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(x)
+    
     x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
     encoded = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(x)
+    
     x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(encoded)
     x = tf.keras.layers.UpSampling2D((2, 2))(x)
+    
     x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
     x = tf.keras.layers.UpSampling2D((2, 2))(x)
+    
     x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
     x = tf.keras.layers.UpSampling2D((2, 2))(x)
 
@@ -80,21 +81,34 @@ def network(x_train, y_train, x_val, y_val):
     return ae
 
 if __name__ == "__main__":
-    X_train = np.zeros((count_n, 128, 128, 1), dtype=np.uint8)
-    Y_train = np.zeros((count_n, 128, 128, 1), dtype=np.uint8)
+    
+    #########################################################
+    #########################################################
+    ################ TRAINING AND VALIDATING ################
+    #########################################################
+    #########################################################
+
+    count_n = 500 * 8
+    IMG_WIDTH = 128
+    IMG_HEIGHT = 128
+
+    X_train = np.zeros((count_n, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
+    Y_train = np.zeros((count_n, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
         
     X, Y = curate(X_train, Y_train)
     
-    X = X / 255
-    Y = Y / 255
+    X = X / 255.
+    Y = Y / 255.
 
     X_TRAIN, X_VAL, Y_TRAIN, Y_VAL = train_test_split(X, Y, test_size = 0.2, random_state = 42)
    
     model_cnn = networkCSNet(X_TRAIN, Y_TRAIN, X_VAL, Y_VAL)
     
     predict = model_cnn.predict(X_VAL[:10,:,:,:])
+    to_predict = X_VAL[:10,:,:,:]
+    true_value = Y_VAL[:10,:,:,:]
 
-    fig = plt.figure(figsize=(9, 4))
+    fig = plt.figure(figsize=(9, 3))
     columns = 10
     rows = 1
     for i in range(1, columns*rows + 1):
