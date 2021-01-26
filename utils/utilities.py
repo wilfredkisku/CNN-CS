@@ -74,6 +74,27 @@ def printResult(X, Y):
     plt.show()
     return None 
 
+def saveResult():
+    rows = 3
+    cols = 3
+
+    fig =  plt.figure(figsize=(12,10))
+
+    for i in range(1,rows+1):
+        for j in range(1, cols+1):
+            img = cv2.imread(os.path.join(os.getcwd(),onlyfewfiles[((i-1)*rows)+j - 1]), 0)
+            patch = image.extract_patches_2d(img, (128,128), max_patches = 1)
+            img = np.resize(patch,(128,128))
+            ax = fig.add_subplot(rows, cols, ((i-1)*rows)+j)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.set_title('{}\nNewline'.format(onlyfewfiles[((i-1)*rows)+j - 1]), fontsize=8)
+            plt.imshow(img, cmap='gray')
+
+    plt.show()
+
+    return None
+
 if __name__ == "__main__":
 
     count_n = 500 * 8

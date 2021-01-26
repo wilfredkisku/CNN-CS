@@ -83,9 +83,7 @@ def network(x_train, y_train, x_val, y_val):
 if __name__ == "__main__":
     
     #########################################################
-    #########################################################
     ################ TRAINING AND VALIDATING ################
-    #########################################################
     #########################################################
 
     count_n = 500 * 8
@@ -105,8 +103,8 @@ if __name__ == "__main__":
     model_cnn = networkCSNet(X_TRAIN, Y_TRAIN, X_VAL, Y_VAL)
     
     predict = model_cnn.predict(X_VAL[:10,:,:,:])
-    to_predict = X_VAL[:10,:,:,:]
-    true_value = Y_VAL[:10,:,:,:]
+    x_val = X_VAL[:10,:,:,:]
+    y_val = Y_VAL[:10,:,:,:]
 
     fig = plt.figure(figsize=(9, 3))
     columns = 10
