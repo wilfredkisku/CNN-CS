@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 
 from sklearn.model_selection import train_test_split
-from utils.utilities import curate
+from utils.utilities_new import curate
 
 def ssim_loss(true, pred):
   return 1 - tf.reduce_mean(tf.image.ssim(true, pred, 1.0))
