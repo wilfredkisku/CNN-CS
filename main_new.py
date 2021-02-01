@@ -48,36 +48,30 @@ def networkCSNet(x_train, y_train, x_val, y_val):
 
     return ae
 
-def network(x_train, y_train, x_val, y_val):
+def network():
 
     input_img = tf.keras.layers.Input(shape=(128, 128, 1))
     
-    x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(input_img)
-    x = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(x)
+    x = tf.keras.layers.Conv2D(8, (3, 3), activation='relu', padding='same')(input_img)
     
-    x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
-    x = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(x)
+    x = tf.keras.layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
     
-    x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
-    encoded = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(x)
+    x = tf.keras.layers.Conv2D(16, (3, 3), activation='relu', padding='same')(x)
     
-    x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(encoded)
-    x = tf.keras.layers.UpSampling2D((2, 2))(x)
+    x = tf.keras.layers.Conv2D(16, (3, 3), activation='relu', padding='same')(x)
     
-    x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
-    x = tf.keras.layers.UpSampling2D((2, 2))(x)
+    x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same')(x)
     
-    x = tf.keras.layers.Conv2D(3, (3, 3), activation='relu', padding='same')(x)
-    x = tf.keras.layers.UpSampling2D((2, 2))(x)
+    x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same')(x)
 
-    decoded = tf.keras.layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+    output_img = tf.keras.layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
     
-    ae = tf.keras.models.Model(inputs = [input_img], outputs = [decoded])
-    ae.compile(optimizer='adam', loss='MSE', metrics=['accuracy'])
+    ae = tf.keras.models.Model(inputs = [input_img], outputs = [output_img])
+    ae.compile(optimizer='adam', loss=ssim_loss)
 
     ae.summary()
 
-    history = ae.fit(x_train, y_train, epochs=35, batch_size=64, shuffle=True, validation_data=(x_val, y_val), verbose = 1)
+    history = ae.fit(x_train, y_train, epochs=1000, batch_size=32, shuffle=True, validation_data=(x_val, y_val), verbose = 1)
     return ae
 
 if __name__ == "__main__":
@@ -85,6 +79,9 @@ if __name__ == "__main__":
     #########################################################
     ################ TRAINING AND VALIDATING ################
     #########################################################
+    
+    #model = network()
+    #model.summary()
 
     count_n = 500 * 8
     IMG_WIDTH = 128
@@ -116,3 +113,4 @@ if __name__ == "__main__":
         ax.set_yticks([])
         plt.imshow(img_x, cmap = 'gray')
     plt.show()
+
