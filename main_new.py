@@ -69,7 +69,7 @@ if __name__ == "__main__":
     model_cnn = SimpleCSNet()
     
     checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-hi-1000.h5', verbose=1, save_best_only=True)
-    history = model_cnn.fit(X_TRAIN, Y_TRAIN, epochs=1000, batch_size=32, shuffle=True, validation_data=(X_TEST, Y_TEST), verbose = 1,  callbacks=[checkpointer])
+    history = model_cnn.fit(X_TRAIN, Y_TRAIN, epochs=1000, batch_size=32, shuffle=True, validation_data=(X_VAL, Y_VAL), verbose = 1,  callbacks=[checkpointer])
 
     hist_df = pd.DataFrame(history.history)
     hist_df.to_csv('/workspace/data/cs-hi-history-1000.csv')
