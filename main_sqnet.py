@@ -20,22 +20,24 @@ def fire(x, squeeze, expand):
 def fire_module(squeeze, expand):
     return lambda x: fire(x, squeeze, expand)
 
-x = tf.keras.layers.Input(shape=[128, 128, 1])
-y = tf.keras.layers.Conv2D(kernel_size=3, filters=12, padding='same', use_bias=True, activation='relu')(x)
-y = fire_module(12, 12)(y)
-y = fire_module(12, 12)(y)
-y = fire_module(12, 12)(y)
-y = fire_module(12, 12)(y)
-y = fire_module(12, 12)(y)
-y = tf.keras.layers.Conv2D(1, (1,1), padding = 'same', activation='sigmoid')(y)
+input_layer = tf.keras.layers.Input(shape=[128, 128, 1])
+y = tf.keras.layers.Conv2D(kernel_size=3, filters=32, padding='same', use_bias=True, activation='relu')(x)
+y = fire_module(32, 32)(y)
+y = fire_module(32, 32)(y)
+y = fire_module(32, 32)(y)
+y = fire_module(32, 32)(y)
+y = fire_module(32, 32)(y)
+output_layer = tf.keras.layers.Conv2D(1, (1,1), padding = 'same', activation='sigmoid')(y)
 
-model = tf.keras.Model(x, y)
-model.summary()
+ae = tf.keras.models.Model(inputs = [input_layer], outputs = [output_layer])
+ae.compile(optimizer='adam', loss=ssim_loss, metrics = [psnr_mean])
+ae.summary()
 
 X_train, Y_train, X_test, Y_test = curateData()
 
-'''
-img = X_train[0]
-plt.imshow(img, cmap='gray')
-plt.show()
-'''
+checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-1000.h5', verbose = 1, save_best_only = True)
+history = ae.fit(X_train, Y_train, epochs = 1000, batch_size = 32, shuffle=True, validation_data = (X_test, Y_test), verbose =1 , callbacks=[checkpointer])
+
+hist_df = pd.DataFrame(history.history)
+hist_df.to_csv('cs-history-1000.csv')
+

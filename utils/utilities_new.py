@@ -15,6 +15,19 @@ import matplotlib.pyplot as plt
 probs = [0.5, 0.6, 0.7, 0.75, 0.775, 0.8, 0.825, 0.85, 0.875, 0.9]
 
 #recreate an image with pixels removed
+def createLin(pp, img):
+    img_ = np.zeros((2, 128, 128, 1), dtype=np.float32)
+
+    for i in range(len(img)):
+        mask = np.random.choice([0, 1], size=(128, 128), p=[1-pp, pp])
+        idx_w, idx_h = np.where(mask ==  1)
+
+        for j in range(len(idx_w)):
+            img[i, idx_w[j],idx_h[j],0] = 0
+
+        img_[i,:,:,0] = img[i,:,:,0]
+    return img_
+
 def create(pp, img):
     
     img_ = np.zeros((10, 128, 128, 1), dtype=np.float32)
@@ -31,6 +44,32 @@ def create(pp, img):
     return img_
 
 #extract the images from the dataset
+def curateLin(X_train, Y_train):
+    data = Path('/home/wilfred/Datasets/Linnaeus256X256/train')
+    lst = [x for x in data.iterdir() if data.is_dir()]
+    cnt = 0
+
+    for idx, j in tqdm(enumerate(lst)):
+        onlyfiles   = [f for f in listdir(lst[idx]) if isfile(join(lst[idx], f))]
+    
+        for _, i in enumerate(onlyfiles):
+            p = join(str(lst[idx]),i)
+            img = cv2.imread(p, 0)
+            y_patches = image.extract_patches_2d(img, (IMG_HEIGHT, IMG_WIDTH), max_patches = 2)
+
+            y_patches = np.reshape(y_patches,(2, IMG_HEIGHT, IMG_WIDTH,-1))
+
+
+            y_patch = copy.deepcopy(y_patches)
+            x_patches = createLin(0.5, y_patch)
+      
+            for k in range(len(x_patches)):
+                X_train[cnt] = x_patches[k]
+                Y_train[cnt] = y_patches[k]
+                cnt += 1
+
+        return X_train, Y_train
+
 def curate(X_train, Y_train):
     data = Path('/home/wilfred/Datasets/BSR_bsds500/BSR/BSDS500/data/images')
     lst = [x for x in data.iterdir() if data.is_dir()]
