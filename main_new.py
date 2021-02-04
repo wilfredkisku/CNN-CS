@@ -13,7 +13,7 @@ def psnr_mean(y_true, y_pred):
 
 
 def ssim_loss(true, pred):
-    return 1 - tf.reduce_mean(tf.image.ssim(true, pred, 1.0))
+    return (1 - tf.reduce_mean(tf.image.ssim(true, pred, 1.0)))
 
 def SimpleCSNet(x_train, y_train, x_val, y_val):
 

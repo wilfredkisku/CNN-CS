@@ -15,7 +15,7 @@ def psnr_mean(y_true, y_pred):
     return tf.reduce_mean(tf.image.psnr(y_true, y_pred, max_val=1.0))
 
 def ssim_loss(y_true, y_pred):
-    return (1 - tf.reduce_mean(tf.image.ssim(y_true, y_pred, 1.0))) + tf.reduce_mean(tf.image.psnr(y_true, y_pred, 1.0))
+    return (1 - tf.reduce_mean(tf.image.ssim(y_true, y_pred, 1.0)))
 
 def fire(x, squeeze, expand):
     y  = tf.keras.layers.Conv2D(filters=squeeze, kernel_size=1, activation='relu', padding='same')(x)
