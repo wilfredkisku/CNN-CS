@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 
 from sklearn.model_selection import train_test_split
-from utils.utilities_new import curate
+from utils.utilities_new import curate, curate_
 
 def psnr_mean(y_true, y_pred):
     return tf.reduce_mean(tf.image.psnr(y_true, y_pred, max_val=1.0))
@@ -48,24 +48,37 @@ def SimpleCSNet(x_train, y_train, x_val, y_val):
 
 if __name__ == "__main__":
     
-    #########################################################
-    ################ TRAINING AND VALIDATING ################
-    #########################################################
     
-    count_n = 500 * 10
+    count_n = 0
     IMG_WIDTH = 128
     IMG_HEIGHT = 128
 
-    X_train = np.zeros((count_n, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
-    Y_train = np.zeros((count_n, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
-        
-    X, Y = curate(X_train, Y_train)
-    
-    X = X / 255.
-    Y = Y / 255.
+    Path1 = Path('/workspace/storage/cnn-cs/data/images')
+    Path2 = Path('/workspace/storage/cnn-cs/data/train')
 
-    X_TRAIN, X_VAL, Y_TRAIN, Y_VAL = train_test_split(X, Y, test_size = 0.2, random_state = 42)
-   
+    lst  = [x for x in Path1.iterdir() if Path1.is_dir()]
+    lst_ = [x for x in Path2.iterdir() if Path2.is_dir()]
+
+    for i in range(len(lst)):
+        count_n += len(os.listdir(os.path.join(Path1,lst[i]))) - 1
+
+    x_train = np.zeros((count_n * 8, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
+    y_train = np.zeros((count_n * 8, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
+
+    curate(Path1, lst, x_train, y_train)
+
+    count_n = 0
+
+    for i in range(len(lst_)):
+        count_n += len(os.listdir(os.path.join(Path2,lst_[i])))
+
+    X_train = np.zeros((count_n * 2, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
+    Y_train = np.zeros((count_n * 2, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
+
+    curate_(Path2, lst_, X_train, Y_train)
+
+    X_TRAIN, X_VAL, Y_TRAIN, Y_VAL = train_test_split(np.concatenate((x_train,X_train),axis=0), np.concatenate((y_train,Y_train),axis=0), test_size = 0.2, random_state = 42)
+
     model_cnn = SimpleCSNet()
     
     checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-hi-1000.h5', verbose=1, save_best_only=True)
@@ -75,6 +88,7 @@ if __name__ == "__main__":
     hist_df.to_csv('/workspace/data/cs-hi-history-1000.csv')
     print('End of training ...')
 
+'''
     predict = model_cnn.predict(X_VAL[:10,:,:,:])
     x_val = X_VAL[:10,:,:,:]
     y_val = Y_VAL[:10,:,:,:]
@@ -89,4 +103,4 @@ if __name__ == "__main__":
         ax.set_yticks([])
         plt.imshow(img_x, cmap = 'gray')
     plt.show()
-
+'''

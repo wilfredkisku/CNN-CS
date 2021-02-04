@@ -115,11 +115,11 @@ if __name__ == "__main__":
     Path2 = Path('/workspace/storage/cnn-cs/data/train')
 
     lst  = [x for x in Path1.iterdir() if Path1.is_dir()]
-    lst_ = [x for x in Path2.iterdir() if Path2.is_dir()] 
+    lst_ = [x for x in Path2.iterdir() if Path2.is_dir()]
 
     for i in range(len(lst)):
         count_n += len(os.listdir(os.path.join(Path1,lst[i]))) - 1
-    
+
     x_train = np.zeros((count_n * 8, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
     y_train = np.zeros((count_n * 8, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
 
@@ -128,12 +128,9 @@ if __name__ == "__main__":
     count_n = 0
 
     for i in range(len(lst_)):
-        count_n += len(os.listdir(os.path.join(Path2,lst_[i]))) 
+        count_n += len(os.listdir(os.path.join(Path2,lst_[i])))
 
     X_train = np.zeros((count_n * 2, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
     Y_train = np.zeros((count_n * 2, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
 
     curate_(Path2, lst_, X_train, Y_train)
-
-    #print(x_train[1000])
-    print(X_train[1000])
