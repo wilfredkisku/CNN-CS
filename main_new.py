@@ -15,7 +15,7 @@ def psnr_mean(y_true, y_pred):
 def ssim_loss(true, pred):
     return (1 - tf.reduce_mean(tf.image.ssim(true, pred, 1.0)))
 
-def SimpleCSNet(x_train, y_train, x_val, y_val):
+def SimpleCSNet():
 
     input_layer = tf.keras.layers.Input((128, 128, 1))
     
@@ -81,26 +81,10 @@ if __name__ == "__main__":
 
     model_cnn = SimpleCSNet()
     
-    checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-hi-1000.h5', verbose=1, save_best_only=True)
+    checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-hi-model-1000.h5', verbose=1, save_best_only=True)
     history = model_cnn.fit(X_TRAIN, Y_TRAIN, epochs=1000, batch_size=32, shuffle=True, validation_data=(X_VAL, Y_VAL), verbose = 1,  callbacks=[checkpointer])
 
     hist_df = pd.DataFrame(history.history)
     hist_df.to_csv('/workspace/data/cs-hi-history-1000.csv')
     print('End of training ...')
 
-'''
-    predict = model_cnn.predict(X_VAL[:10,:,:,:])
-    x_val = X_VAL[:10,:,:,:]
-    y_val = Y_VAL[:10,:,:,:]
-
-    fig = plt.figure(figsize=(9, 3))
-    columns = 10
-    rows = 1
-    for i in range(1, columns*rows + 1):
-        img_x = predict[i-1]
-        ax = fig.add_subplot(rows, columns, i)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        plt.imshow(img_x, cmap = 'gray')
-    plt.show()
-'''

@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     model_cnn = SimpleCSNet_sq()
 
-    checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-sq-1000.h5', verbose = 1, save_best_only = True)
+    checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-sq-model-1000.h5', verbose = 1, save_best_only = True)
     history = ae.fit(X_TRAIN, Y_TRAIN, epochs = 1000, batch_size = 32, shuffle=True, validation_data = (X_VAL, Y_VAL), verbose =1 , callbacks=[checkpointer])
 
     hist_df = pd.DataFrame(history.history)
