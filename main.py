@@ -25,21 +25,21 @@ def psnr_mean(y_true, y_pred):
 def ssim_loss(true, pred):
     return 1 - tf.reduce_mean(tf.image.ssim(true, pred, 1.0))
 
-def SimpleCSNet2():
+def SimpleCSNet():
 
     input_layer = tf.keras.layers.Input((128, 128, 1))
     
-    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same', kernel_initializer='orthogonal')(input_layer)
+    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same')(input_layer)
     x = tf.keras.layers.ReLU()(x)
-    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same', kernel_initializer='orthogonal')(x)
+    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same')(x)
     x = tf.keras.layers.ReLU()(x)
-    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same', kernel_initializer='orthogonal')(x)
+    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same')(x)
     x = tf.keras.layers.ReLU()(x)
-    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same', kernel_initializer='orthogonal')(x)
+    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same')(x)
     x = tf.keras.layers.ReLU()(x)
-    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same', kernel_initializer='orthogonal')(x)
+    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same')(x)
     x = tf.keras.layers.ReLU()(x)
-    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same', kernel_initializer='orthogonal')(x)
+    x = tf.keras.layers.Conv2D(32, (3, 3), padding='same')(x)
     x = tf.keras.layers.ReLU()(x)
     output_layer = tf.keras.layers.Conv2D(1, (1, 1), activation='sigmoid', padding='same', kernel_initializer='orthogonal')(x)
 
@@ -92,15 +92,14 @@ if __name__ == "__main__":
     
     X_TRAIN, X_VAL, Y_TRAIN, Y_VAL = train_test_split(np.concatenate((x_train,X_train),axis=0), np.concatenate((y_train,Y_train),axis=0), test_size = 0.2, random_state = 42)
    
-    model_cnn = SimpleCSNet2()
+    model_cnn = SimpleCSNet()
     
-    #checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-simple-model-1000.h5', verbose=1, save_best_only=True)
-    callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=50)
-    history = model_cnn.fit(X_TRAIN, Y_TRAIN, epochs=500, batch_size=64, shuffle=True, validation_data=(X_VAL, Y_VAL), verbose = 1,  callbacks=[callback])
+    #callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=50)
+    history = model_cnn.fit(X_TRAIN, Y_TRAIN, epochs=500, batch_size=32, shuffle=True, validation_data=(X_VAL, Y_VAL), verbose = 1)
 
     hist_df = pd.DataFrame(history.history)
-    hist_df.to_csv('/workspace/data/cs-simple-history-1000.csv')
-    model_cnn.save('/workspace/data/cs-simple-model-1000.h5')
+    hist_df.to_csv('/workspace/data/cs-simple-history-500.csv')
+    model_cnn.save('/workspace/data/cs-simple-model-500.h5')
 
     print('End of training ...')
 
