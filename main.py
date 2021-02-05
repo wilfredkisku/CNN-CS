@@ -94,11 +94,13 @@ if __name__ == "__main__":
    
     model_cnn = SimpleCSNet2()
     
-    checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-simple-model-1000.h5', verbose=1, save_best_only=True)
-    history = model_cnn.fit(X_TRAIN, Y_TRAIN, epochs=500, batch_size=64, shuffle=True, validation_data=(X_VAL, Y_VAL), verbose = 1,  callbacks=[checkpointer])
+    #checkpointer = tf.keras.callbacks.ModelCheckpoint('/workspace/data/cs-simple-model-1000.h5', verbose=1, save_best_only=True)
+    callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=50)
+    history = model_cnn.fit(X_TRAIN, Y_TRAIN, epochs=500, batch_size=64, shuffle=True, validation_data=(X_VAL, Y_VAL), verbose = 1,  callbacks=[callback])
 
     hist_df = pd.DataFrame(history.history)
     hist_df.to_csv('/workspace/data/cs-simple-history-1000.csv')
-    
+    model_cnn.save('/workspace/data/cs-simple-model-1000.h5')
+
     print('End of training ...')
 
