@@ -2,6 +2,7 @@ import os
 import cv2
 import copy
 import numpy as np
+import tensorflow as tf
 from os import listdir
 from pathlib import Path
 from os.path import isfile, join
@@ -163,8 +164,31 @@ def saveResult():
 
     return None
 
+def convertModel(path):
+    
+    lst = [x for x in os.listdir(path) if os.path.isdir(os.path.join(path,x))]
+
+    for idx, val in enumerate(lst):
+        converter = tf.lite.TFLiteConverter.from_saved_model(path+'/'+val)
+        tflite_model = converter.convert()
+        with open('/home/wilfred/Downloads/github/Python_Projects/cnn-cs/results/constant_85/'+val+'-model.tflite', 'wb') as f:
+            f.write(tflite_model)
+    return None
+
+def extractWeights(path):
+    
+    model = tf.keras.models.load_model(path, compile=False)
+
+    for layer in model.layers:
+        if len(layer.weights) > 0:
+            print(layer.name, layer.weights[0].shape)
+            print(np.where(layer.weights[0] == 0))
+
+    return None
+
 if __name__ == "__main__":
 
+    '''
     count_n = 0
     IMG_WIDTH = 128
     IMG_HEIGHT = 128
@@ -192,4 +216,13 @@ if __name__ == "__main__":
     Y_train = np.zeros((count_n * 2, IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.uint8)
 
     curate_(Path2, lst_, X_train, Y_train)
+    
 
+    convertModel()
+    '''
+
+
+    #p_hi = '/home/wilfred/Downloads/github/Python_Projects/cnn-cs/results/constant_85/hi-model/cs-hi-model-500.h5'
+    p_simple = '/home/wilfred/Downloads/github/Python_Projects/cnn-cs/results/constant_85/simple-model/cs-simple-model-500.h5'
+    p_sq = '/home/wilfred/Downloads/github/Python_Projects/cnn-cs/results/constant_85/sq-model/cs-sq-model-500.h5'
+    extractWeights(p_sq)
