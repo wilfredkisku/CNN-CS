@@ -7,7 +7,7 @@ import tensorflow as tf
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
-from utils.utilities import curate, curate_
+from utils.utilities_new import curate, curate_
 
 import cv2
 import copy
@@ -55,6 +55,10 @@ if __name__ == "__main__":
     ################ TRAINING AND VALIDATING ################
     #########################################################
 
+    model = SimpleCSNet_sq()
+    model.summary()
+
+'''
     count_n = 0
     IMG_WIDTH = 128
     IMG_HEIGHT = 128
@@ -101,3 +105,5 @@ if __name__ == "__main__":
     model_cnn.save('/workspace/data/cs-sq-model-500.h5')
 
     print('End of training ...')
+
+    '''

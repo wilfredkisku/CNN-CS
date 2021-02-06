@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 
 from sklearn.model_selection import train_test_split
-from utils.utilities import curate, curate_
+from utils.utilities_new import curate, curate_
 
 def psnr_mean(y_true, y_pred):
     return tf.reduce_mean(tf.image.psnr(y_true, y_pred, max_val=1.0))
@@ -55,7 +55,12 @@ if __name__ == "__main__":
     #########################################################
     ################ TRAINING AND VALIDATING ################
     #########################################################
-    
+
+    model = SimpleCSNet()
+
+    model.summary()
+
+''' 
     count_n = 0
     IMG_WIDTH = 128
     IMG_HEIGHT = 128
@@ -102,4 +107,4 @@ if __name__ == "__main__":
     model_cnn.save('/workspace/data/cs-simple-model-500.h5')
 
     print('End of training ...')
-
+'''
